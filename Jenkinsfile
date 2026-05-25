@@ -3,16 +3,11 @@ pipeline {
     agent any
 
     tools {
-        jdk 'JDK21'
         maven 'Maven'
     }
 
-    environment {
-        IMAGE_NAME = "springboot-app"
-    }
-
     stages {
-      
+
         stage('Build JAR') {
             steps {
                 bat 'mvn clean package'
@@ -21,7 +16,9 @@ pipeline {
 
         stage('Configure Minikube Docker') {
             steps {
-                bat 'minikube -p minikube docker-env --shell powershell > minikube_env.ps1'
+                bat 'minikube -p minikube docker-env --shell cmd > docker-env.bat'
+                bat 'call docker-env.bat'
+                bat 'docker info'
             }
         }
 
@@ -35,6 +32,7 @@ pipeline {
             steps {
                 bat 'kubectl apply -f k8s/deployment.yaml'
                 bat 'kubectl apply -f k8s/service.yaml'
+                bat 'kubectl rollout restart deployment springboot-app'
             }
         }
 

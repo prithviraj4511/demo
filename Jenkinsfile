@@ -12,13 +12,7 @@ pipeline {
     }
 
     stages {
-
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/prithviraj4511/demo.git'
-            }
-        }
-
+      
         stage('Build JAR') {
             steps {
                 bat 'mvn clean package'
